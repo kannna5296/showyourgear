@@ -1,4 +1,4 @@
-package helloworld
+package showyourgear
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import org.junit.Assert.assertEquals
