@@ -1,5 +1,5 @@
 .idea/
 .aws-sam/
 
-showyourgear-api/.gradle
-showyourgear-api/build
+HelloWorldFunction/.gradle
+HelloWorldFunction/build
