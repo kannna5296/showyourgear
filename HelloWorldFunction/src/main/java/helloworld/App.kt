@@ -1,17 +1,28 @@
 package helloworld
 
+import com.amazonaws.services.lambda.runtime.Context
+import com.amazonaws.services.lambda.runtime.RequestHandler
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.net.URL
+import java.util.stream.Collectors
 
 /**
  * Handler for requests to Lambda function.
  */
 class App : RequestHandler<APIGatewayProxyRequestEvent?, APIGatewayProxyResponseEvent?> {
-    fun handleRequest(input: APIGatewayProxyRequestEvent?, context: Context?): APIGatewayProxyResponseEvent {
-        val headers: Map<String, String> = HashMap()
-        headers.put("Content-Type", "application/json")
-        headers.put("X-Custom-Header", "application/json")
+
+    override fun handleRequest(input: APIGatewayProxyRequestEvent?, context: Context?): APIGatewayProxyResponseEvent {
+        val headers: MutableMap<String, String> = mutableMapOf()
+        headers["Content-Type"] = "application/json"
+        headers["X-Custom-Header"] = "application/json"
+
         val response: APIGatewayProxyResponseEvent = APIGatewayProxyResponseEvent()
             .withHeaders(headers)
+
         return try {
             val pageContents = getPageContents("https://checkip.amazonaws.com")
             val output: String = String.format("{ \"message\": \"hello world\", \"location\": \"%s\" }", pageContents)
