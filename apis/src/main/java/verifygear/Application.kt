@@ -20,7 +20,7 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
             .withHeaders(headers)
 
         return try {
-            val output: String = String.format("{ \"message\": \"Calling postPhoto!\"}")
+            val output: String = String.format("{ \"message\": \"Calling verifyGear!\"}")
             response
                 .withStatusCode(200)
                 .withBody(output)
