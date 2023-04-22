@@ -1,5 +1,5 @@
 .idea/
 .aws-sam/
 
-ShowYourGear/.gradle
-ShowYourGear/build
+apis/.gradle
+apis/build

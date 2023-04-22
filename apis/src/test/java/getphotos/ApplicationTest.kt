@@ -1,4 +1,4 @@
-package showyourgear
+package getphotos
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import org.junit.Assert.assertEquals

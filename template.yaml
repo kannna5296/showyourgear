@@ -12,11 +12,11 @@ Globals:
     MemorySize: 512
 
 Resources:
-  ShowYourGear:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  GetPhotosFunction:
+    Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ShowYourGear
-      Handler: showyourgear.Application::handleRequest
+      CodeUri: apis
+      Handler: getphotos.Application::handleRequest
       Runtime: java17
       Architectures:
       - x86_64
@@ -25,10 +25,10 @@ Resources:
         Variables:
           PARAM1: VALUE
       Events:
-        HelloWorld:
+        Photo:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /hello
+            Path: /photo
             Method: get
 
   ApplicationResourceGroup:
