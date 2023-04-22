@@ -1,4 +1,4 @@
-package getphotos
+package postphoto
 
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
@@ -20,7 +20,7 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
             .withHeaders(headers)
 
         return try {
-            val output: String = String.format("{ \"message\": \"Calling getPhotos!\"}")
+            val output: String = String.format("{ \"message\": \"Calling postPhoto!\"}")
             response
                 .withStatusCode(200)
                 .withBody(output)

@@ -12,6 +12,7 @@ Globals:
     MemorySize: 512
 
 Resources:
+  # 写真取得API
   GetPhotosFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -30,6 +31,25 @@ Resources:
           Properties:
             Path: /photo
             Method: get
+  # 写真登録API
+  PostPhotoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: apis
+      Handler: postphoto.Application::handleRequest
+      Runtime: java17
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          PARAM1: VALUE
+      Events:
+        Photo:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /photos
+            Method: get # 仮でget(そのうちpostにする)
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
