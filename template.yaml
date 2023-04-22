@@ -5,7 +5,6 @@ Description: >
 
   Sample SAM Template for showyourgear
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 20
@@ -22,12 +21,12 @@ Resources:
       Architectures:
       - x86_64
       MemorySize: 512
-      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+      Environment:
         Variables:
           PARAM1: VALUE
       Events:
         Photo:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
             Path: /photo
             Method: get
@@ -49,7 +48,28 @@ Resources:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /photos
-            Method: get # 仮でget(そのうちpostにする)
+            Method: post
+
+
+  # 楽器判定API
+  verifyGearFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: apis
+      Handler: verifygear.Application::handleRequest
+      Runtime: java17
+      Architectures:
+        - x86_64
+      MemorySize: 512
+      Environment:
+        Variables:
+          PARAM1: VALUE
+      Events:
+        Photo:
+          Type: Api
+          Properties:
+            Path: /gear
+            Method: post
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
