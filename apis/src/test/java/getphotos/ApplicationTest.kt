@@ -1,4 +1,4 @@
-package showyourgear
+package getphotos
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import org.junit.Assert.assertEquals
@@ -16,6 +16,6 @@ class ApplicationTest {
         val content: String = result.body
         assertNotNull(content)
         assertTrue(content.contains("\"message\""))
-        assertTrue(content.contains("\"hello world\""))
+        assertTrue(content.contains("\"Calling getPhotos!\""))
     }
 }
