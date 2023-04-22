@@ -25,7 +25,7 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
                 .withBody(output)
         } catch (e: Exception) {
             response
-                .withBody("{}")
+                .withBody("{ \"message\": \"予期しないエラーが発生しました。ごめんなさい！！！\"}")
                 .withStatusCode(500)
         }
     }
