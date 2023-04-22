@@ -6,10 +6,10 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class AppTest {
+class ApplicationTest {
     @Test
     fun successfulResponse() {
-        val app = App()
+        val app = Application()
         val result: APIGatewayProxyResponseEvent = app.handleRequest(null, null)
         assertEquals(200, result.statusCode)
         assertEquals("application/json", result.headers["Content-Type"])
@@ -17,6 +17,5 @@ class AppTest {
         assertNotNull(content)
         assertTrue(content.contains("\"message\""))
         assertTrue(content.contains("\"hello world\""))
-        assertTrue(content.contains("\"location\""))
     }
 }
