@@ -1,48 +1,35 @@
-package helloworld;
+package helloworld
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+import java.io.BufferedReader
 
 /**
  * Handler for requests to Lambda function.
  */
-public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-
-    public APIGatewayProxyResponseEvent handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
-        headers.put("X-Custom-Header", "application/json");
-
-        APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
-                .withHeaders(headers);
-        try {
-            final String pageContents = this.getPageContents("https://checkip.amazonaws.com");
-            String output = String.format("{ \"message\": \"hello world\", \"location\": \"%s\" }", pageContents);
-
-            return response
-                    .withStatusCode(200)
-                    .withBody(output);
-        } catch (IOException e) {
-            return response
-                    .withBody("{}")
-                    .withStatusCode(500);
+class App : RequestHandler<APIGatewayProxyRequestEvent?, APIGatewayProxyResponseEvent?> {
+    fun handleRequest(input: APIGatewayProxyRequestEvent?, context: Context?): APIGatewayProxyResponseEvent {
+        val headers: Map<String, String> = HashMap()
+        headers.put("Content-Type", "application/json")
+        headers.put("X-Custom-Header", "application/json")
+        val response: APIGatewayProxyResponseEvent = APIGatewayProxyResponseEvent()
+            .withHeaders(headers)
+        return try {
+            val pageContents = getPageContents("https://checkip.amazonaws.com")
+            val output: String = String.format("{ \"message\": \"hello world\", \"location\": \"%s\" }", pageContents)
+            response
+                .withStatusCode(200)
+                .withBody(output)
+        } catch (e: IOException) {
+            response
+                .withBody("{}")
+                .withStatusCode(500)
         }
     }
 
-    private String getPageContents(String address) throws IOException{
-        URL url = new URL(address);
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()))) {
-            return br.lines().collect(Collectors.joining(System.lineSeparator()));
+    @Throws(IOException::class)
+    private fun getPageContents(address: String): String {
+        val url = URL(address)
+        BufferedReader(InputStreamReader(url.openStream())).use { br ->
+            return br.lines().collect(Collectors.joining(System.lineSeparator()))
         }
     }
 }
