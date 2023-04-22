@@ -4,7 +4,6 @@ import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
-import java.io.IOException
 
 /**
  * Handler for requests to Lambda function.
@@ -24,7 +23,7 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
             response
                 .withStatusCode(200)
                 .withBody(output)
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             response
                 .withBody("{}")
                 .withStatusCode(500)
