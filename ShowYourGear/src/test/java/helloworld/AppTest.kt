@@ -11,9 +11,9 @@ class AppTest {
     fun successfulResponse() {
         val app = App()
         val result: APIGatewayProxyResponseEvent = app.handleRequest(null, null)
-        assertEquals(200, result.getStatusCode().intValue())
-        assertEquals("application/json", result.getHeaders().get("Content-Type"))
-        val content: String = result.getBody()
+        assertEquals(200, result.statusCode)
+        assertEquals("application/json", result.headers["Content-Type"])
+        val content: String = result.body
         assertNotNull(content)
         assertTrue(content.contains("\"message\""))
         assertTrue(content.contains("\"hello world\""))
