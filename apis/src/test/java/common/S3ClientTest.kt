@@ -1,6 +1,5 @@
-package getphotos
+package common
 
-import MyS3Client
 import software.amazon.awssdk.services.s3.model.ListObjectsRequest
 import kotlin.test.Test
 import kotlin.test.assertTrue
