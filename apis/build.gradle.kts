@@ -13,6 +13,7 @@ dependencies {
     implementation("software.amazon.awssdk:aws-sdk-java:2.20.44")
 
     testImplementation("junit:junit:4.13.2")
+    testImplementation(kotlin("test"))
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17
