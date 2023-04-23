@@ -22,7 +22,6 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
         val req = ListObjectsRequest.builder().bucket("localbucket").build()
         val list = s3Client.listObjects(req)
 
-
         val response: APIGatewayProxyResponseEvent = APIGatewayProxyResponseEvent()
             .withHeaders(headers)
 

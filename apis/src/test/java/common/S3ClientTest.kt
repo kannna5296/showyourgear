@@ -14,7 +14,7 @@ class S3ClientTest {
         s3Client.use {
             val req = ListObjectsRequest.builder().bucket(bucketName).build()
             val list = s3Client.listObjects(req)
-            assertTrue { list.contents().size > 0 } //少なくとも一つは帰ってくる
+            assertTrue { list.contents().size > 0 } // 少なくとも一つは帰ってくる
         }
     }
 }
