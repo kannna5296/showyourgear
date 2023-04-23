@@ -16,7 +16,7 @@ class MyS3Client {
             return S3Client.builder()
                 .region(Region.AP_NORTHEAST_1)
                 .credentialsProvider(StaticCredentialsProvider.create(credentials))
-                // Localでのみ
+                // Localでのみ/
                 .endpointOverride(URI.create("https://s3.localhost.localstack.cloud:4566"))
                 .build()
         }
