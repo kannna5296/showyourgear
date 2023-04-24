@@ -47,12 +47,12 @@ Resources:
         Photo:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /photos
+            Path: /photo
             Method: post
 
 
   # 楽器判定API
-  verifyGearFunction:
+  VerifyGearFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: apis
@@ -68,7 +68,7 @@ Resources:
         Photo:
           Type: Api
           Properties:
-            Path: /gear
+            Path: /isgear
             Method: post
 
   ApplicationResourceGroup:
@@ -90,10 +90,16 @@ Outputs:
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   ShowYourGearApi:
     Description: API Gateway endpoint URL for Prod stage for Hello World function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  ShowYourGear:
-    Description: Hello World Lambda Function ARN
-    Value: !GetAtt ShowYourGear.Arn
-  ShowYourGearIamRole:
-    Description: Implicit IAM Role created for Hello World function
-    Value: !GetAtt ShowYourGearRole.Arn
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/showyourgear/"
+  GetPhotosFunction:
+    Description: 写真取得API ARN
+    Value: !GetAtt GetPhotosFunction.Arn
+  PostPhotosFunction:
+    Description: 写真取得API ARN
+    Value: !GetAtt PostPhotoFunction.Arn
+  VerifyGearFunction:
+    Description: 楽器判定API ARN
+    Value: !GetAtt VerifyGearFunction.Arn
+#  ShowYourGearIamRole:
+#    Description: Implicit IAM Role created for Hello World function
+#    Value: !GetAtt ShowYourGearRole.Arn
