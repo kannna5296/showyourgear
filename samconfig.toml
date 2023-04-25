@@ -21,6 +21,7 @@ s3_prefix = "showyourgear"
 region = "ap-northeast-1"
 disable_rollback = true
 image_repositories = []
+parameter_overrides = "ResourcePrefix=\"showyourgear\" EnvironmentName=\"dev\""
 
 [default.package.parameters]
 resolve_s3 = true
