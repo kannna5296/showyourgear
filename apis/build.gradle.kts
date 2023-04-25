@@ -10,7 +10,7 @@ repositories {
 dependencies {
     implementation("com.amazonaws:aws-lambda-java-core:1.2.1")
     implementation("com.amazonaws:aws-lambda-java-events:3.11.0")
-    implementation("software.amazon.awssdk:aws-sdk-java:2.20.44")
+    implementation("software.amazon.awssdk:s3:2.20.51")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation(kotlin("test"))
