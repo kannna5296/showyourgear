@@ -1,9 +1,16 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  showyourgear
+Description: showyourgear
 
-  Sample SAM Template for showyourgear
+Parameters:
+  ResourcePrefix:
+    Type: String
+    Default: showyourgear
+  EnvironmentName:
+    Type: String
+    AllowedValues:
+      - dev
+      - prd
 
 Globals:
   Function:
@@ -17,7 +24,7 @@ Resources:
     Properties:
       CodeUri: apis
       Handler: getphotos.Application::handleRequest
-      Runtime: java17
+      Runtime: java11
       Architectures:
       - x86_64
       MemorySize: 512
@@ -36,7 +43,7 @@ Resources:
     Properties:
       CodeUri: apis
       Handler: postphoto.Application::handleRequest
-      Runtime: java17
+      Runtime: java11
       Architectures:
         - x86_64
       MemorySize: 512
@@ -57,7 +64,7 @@ Resources:
     Properties:
       CodeUri: apis
       Handler: verifygear.Application::handleRequest
-      Runtime: java17
+      Runtime: java11
       Architectures:
         - x86_64
       MemorySize: 512
@@ -70,6 +77,39 @@ Resources:
           Properties:
             Path: /isgear
             Method: post
+
+  ImageS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${ResourcePrefix}-${EnvironmentName}-image
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: False
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+
+  ImageS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ImageS3Bucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref ImageS3Bucket
+                - /*
+            Principal: '*'
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
