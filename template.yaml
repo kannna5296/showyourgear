@@ -18,10 +18,10 @@ Globals:
   Function:
     Timeout: 20
     MemorySize: 512
-  Environment:
-    Variables:
-      ENV_NAME: !Sub ${EnvironmentName}
-      API_ALLOW_ORIGIN: !Sub ${ApiAllowOrigin}
+    Environment:
+      Variables:
+        ENV_NAME: !Sub ${EnvironmentName}
+        API_ALLOW_ORIGIN: !Sub ${ApiAllowOrigin}
 
 Resources:
   # 写真取得API
@@ -38,11 +38,12 @@ Resources:
         Variables:
           PARAM1: VALUE
       Events:
-        Photo:
+        RestApis:
           Type: Api
           Properties:
+            RestApiId: !Ref RestApis
             Path: /photo
-            Method: get
+            Method: GET
   # 写真登録API
   PostPhotoFunction:
     Type: AWS::Serverless::Function
@@ -57,9 +58,10 @@ Resources:
         Variables:
           PARAM1: VALUE
       Events:
-        Photo:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        RestApis:
+          Type: Api
           Properties:
+            RestApiId: !Ref RestApis
             Path: /photo
             Method: post
 
@@ -78,11 +80,12 @@ Resources:
         Variables:
           PARAM1: VALUE
       Events:
-        Photo:
+        RestApis:
           Type: Api
           Properties:
+            RestApiId: !Ref RestApis
             Path: /isgear
-            Method: post
+            Method: POST
 
   ImageS3Bucket:
     Type: AWS::S3::Bucket
@@ -144,9 +147,6 @@ Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  ShowYourGearApi:
-    Description: API Gateway endpoint URL for Prod stage for ShowYourGear functions
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/rod/showyourgear/"
   GetPhotosFunction:
     Description: 写真取得API ARN
     Value: !GetAtt GetPhotosFunction.Arn
@@ -156,6 +156,3 @@ Outputs:
   VerifyGearFunction:
     Description: 楽器判定API ARN
     Value: !GetAtt VerifyGearFunction.Arn
-#  ShowYourGearIamRole:
-#    Description: Implicit IAM Role created for Hello World function
-#    Value: !GetAtt ShowYourGearRole.Arn
