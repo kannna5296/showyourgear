@@ -11,11 +11,17 @@ Parameters:
     AllowedValues:
       - dev
       - prd
+  ApiAllowOrigin:
+    Type: String
 
 Globals:
   Function:
     Timeout: 20
     MemorySize: 512
+  Environment:
+    Variables:
+      ENV_NAME: !Sub ${EnvironmentName}
+      API_ALLOW_ORIGIN: !Sub ${ApiAllowOrigin}
 
 Resources:
   # 写真取得API
@@ -111,6 +117,16 @@ Resources:
                 - /*
             Principal: '*'
 
+  RestApis:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub ${ResourcePrefix}-${EnvironmentName}
+      StageName: !Sub ${ResourcePrefix}-${EnvironmentName}-apis
+      Cors:
+        AllowOrigin: !Sub "'${ApiAllowOrigin}'"
+        AllowHeaders: "'Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token'"
+        AllowMethods: "'POST, OPTIONS'"
+
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
     Properties:
@@ -129,8 +145,8 @@ Outputs:
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   ShowYourGearApi:
-    Description: API Gateway endpoint URL for Prod stage for Hello World function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/showyourgear/"
+    Description: API Gateway endpoint URL for Prod stage for ShowYourGear functions
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/rod/showyourgear/"
   GetPhotosFunction:
     Description: 写真取得API ARN
     Value: !GetAtt GetPhotosFunction.Arn
