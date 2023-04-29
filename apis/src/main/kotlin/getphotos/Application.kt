@@ -22,6 +22,16 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
         val req = ListObjectsRequest.builder().bucket("localbucket").build()
         val list = s3Client.listObjects(req)
 
+//        val photos = list.contents().forEach {
+//            Photo(
+//                src = "urlFromEnv" + it.key(),
+//                size = Size(
+//                    width = it.size(),
+//                    height = it.size(), // サイズはどうやって取得するんや？
+//                )
+//            )
+//        }
+
         val response: APIGatewayProxyResponseEvent = APIGatewayProxyResponseEvent()
             .withHeaders(headers)
 

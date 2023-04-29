@@ -11,14 +11,21 @@ class MyS3Client {
 
     companion object {
         fun create(): S3Client {
+
+            val env = System.getenv()["ENV_NAME"]
+            println("環境:$env")
             val credentials: AwsCredentials = AwsBasicCredentials.create("dummy", "dummy")
 
-            return S3Client.builder()
+            val builder = S3Client.builder()
                 .region(Region.AP_NORTHEAST_1)
                 .credentialsProvider(StaticCredentialsProvider.create(credentials))
-                // Localでのみ/
-                .endpointOverride(URI.create("https://s3.localhost.localstack.cloud:4566"))
-                .build()
+
+            // Local
+            if (env == null) {
+                builder.endpointOverride(URI.create("https://s3.localhost.localstack.cloud:4566"))
+            }
+
+            return builder.build()
         }
     }
 }
