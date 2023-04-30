@@ -13,9 +13,15 @@ class MyS3Client {
         fun create(): S3Client {
 
             val env = System.getenv()["ENV_NAME"]
-            println("環境:$env")
-            val credentials: AwsCredentials = AwsBasicCredentials.create("dummy", "dummy")
-            // TODO ここの認証のやり方考える
+            val accessKey = System.getenv()["S3_ACCESS_KEY"]
+            val secretKey = System.getenv()["S3_SECRET_KEY"]
+
+            var credentials: AwsCredentials = if (env != null) {
+                AwsBasicCredentials.create(accessKey, secretKey)
+            } else {
+                // Local
+                AwsBasicCredentials.create("dummy", "dummy")
+            }
 
             val builder = S3Client.builder()
                 .region(Region.AP_NORTHEAST_1)

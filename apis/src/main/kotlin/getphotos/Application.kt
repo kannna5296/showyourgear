@@ -19,8 +19,14 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
 
         val s3Client = MyS3Client.create()
 
-        val req = ListObjectsRequest.builder().bucket("localbucket").build()
+        val bucketName: String = System.getenv()["BUCKET_NAME"] ?: "localbucket"
+
+        val req = ListObjectsRequest.builder().bucket(bucketName).build()
         val list = s3Client.listObjects(req)
+
+        list.contents().forEach {
+            println(it.key())
+        }
 
 //        val photos = list.contents().forEach {
 //            Photo(
