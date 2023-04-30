@@ -4,6 +4,7 @@ import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
+import com.fasterxml.jackson.databind.ObjectMapper
 import common.MyS3Client
 import software.amazon.awssdk.services.s3.model.ListObjectsRequest
 
@@ -18,6 +19,7 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
         headers["X-Custom-Header"] = "application/json"
 
         val s3Client = MyS3Client.create()
+        val objectMapper = ObjectMapper()
 
         val bucketName: String = System.getenv()["BUCKET_NAME"] ?: "localbucket"
 
@@ -25,27 +27,22 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
         val list = s3Client.listObjects(req)
 
         list.contents().forEach {
-            println(it.key())
+            println(it.toString())
         }
 
-//        val photos = list.contents().forEach {
-//            Photo(
-//                src = "urlFromEnv" + it.key(),
-//                size = Size(
-//                    width = it.size(),
-//                    height = it.size(), // サイズはどうやって取得するんや？
-//                )
-//            )
-//        }
+        val photos = list.contents().shuffled().take(100).forEach {
+            Photo(
+                src = "https://" + bucketName + "s3.ap-northeast-1.amazonaws.com/" + it.key(),
+            )
+        }
 
         val response: APIGatewayProxyResponseEvent = APIGatewayProxyResponseEvent()
             .withHeaders(headers)
 
         return try {
-            val output: String = String.format("{ \"message\": \"Calling getPhotos!\"}")
             response
                 .withStatusCode(200)
-                .withBody(output)
+                .withBody(objectMapper.writeValueAsString(photos))
         } catch (e: Exception) {
             response
                 .withBody("{ \"message\": \"予期しないエラーが発生しました。ごめんなさい！！！\"}")
