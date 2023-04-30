@@ -30,9 +30,9 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
             println(it.toString())
         }
 
-        val photos = list.contents().shuffled().take(100).forEach {
+        val photos = list.contents().shuffled().take(100).map {
             Photo(
-                src = "https://" + bucketName + "s3.ap-northeast-1.amazonaws.com/" + it.key(),
+                src = "https://" + bucketName + ".s3.ap-northeast-1.amazonaws.com/" + it.key(),
             )
         }
 
