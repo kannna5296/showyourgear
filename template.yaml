@@ -25,6 +25,8 @@ Globals:
       Variables:
         ENV_NAME: !Sub ${EnvironmentName}
         API_ALLOW_ORIGIN: !If [IsProduction, "HOGEHOGEHOGEHOGEHOGEGEEEE", "http://localhost:5173"]
+        S3_ACCESS_KEY: '{{resolve:secretsmanager:showyourgear:SecretString:s3AccessKey}}'
+        S3_SECRET_KEY: '{{resolve:secretsmanager:showyourgear:SecretString:s3SecretKey}}'
 
 Resources:
   # 写真取得API
