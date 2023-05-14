@@ -28,7 +28,7 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
         val s3Client = MyS3Client.create()
         val objectMapper = ObjectMapper()
 
-        val bucketName: String = System.getenv()["BUCKET_NAME"] ?: "localbucket"
+        val bucketName: String = System.getenv()["S3_BUCKET_NAME"] ?: "localbucket"
 
         val req = ListObjectsRequest.builder().bucket(bucketName).build()
         val list = s3Client.listObjects(req)
