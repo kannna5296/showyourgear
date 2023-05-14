@@ -119,7 +119,7 @@ Resources:
       Cors:
         AllowOrigin: !Sub "'${ApiAllowOrigin}'"
         AllowHeaders: "'Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token'"
-        AllowMethods: "'POST'"
+        AllowMethods: "'POST','GET'"
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
