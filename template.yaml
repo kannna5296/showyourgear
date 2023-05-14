@@ -14,6 +14,9 @@ Parameters:
   ApiAllowOrigin:
     Type: String
 
+Conditions:
+  IsProduction: !Equals [!Ref EnvironmentName, "prd"]
+
 Globals:
   Function:
     Timeout: 20
@@ -21,7 +24,7 @@ Globals:
     Environment:
       Variables:
         ENV_NAME: !Sub ${EnvironmentName}
-        API_ALLOW_ORIGIN: !Sub ${ApiAllowOrigin}
+        API_ALLOW_ORIGIN: !If [IsProduction, "HOGEHOGEHOGEHOGEHOGEGEEEE", "http://localhost:5173"]
 
 Resources:
   # 写真取得API

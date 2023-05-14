@@ -17,9 +17,8 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
         val headers: MutableMap<String, String> = mutableMapOf()
         headers["Content-Type"] = "application/json"
         headers["X-Custom-Header"] = "application/json"
-//        headers["Access-Control-Allow-Origin"] = "http://localhost:5173"
-//        headers["Access-Control-Allow-Headers"] = "Content-Type"
-//        headers["Access-Control-Allow-Methods"] = "GET"
+        val apiAllowOrigin: String = System.getenv()["API_ALLOW_ORIGIN"] ?: throw Exception("Lambdaの環境変数設定が不足しています")
+        headers["Access-Control-Allow-Origin"] = apiAllowOrigin
 
         val s3Client = MyS3Client.create()
         val objectMapper = ObjectMapper()
