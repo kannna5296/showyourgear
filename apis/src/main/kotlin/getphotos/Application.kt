@@ -14,11 +14,16 @@ import software.amazon.awssdk.services.s3.model.ListObjectsRequest
 class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     override fun handleRequest(input: APIGatewayProxyRequestEvent?, context: Context?): APIGatewayProxyResponseEvent {
+
+        val env = System.getenv()["ENV_NAME"] // TODO S3の方でも読んでもうてるの一元管理したい
+
         val headers: MutableMap<String, String> = mutableMapOf()
         headers["Content-Type"] = "application/json"
         headers["X-Custom-Header"] = "application/json"
-        val apiAllowOrigin: String = System.getenv()["API_ALLOW_ORIGIN"] ?: throw Exception("Lambdaの環境変数設定が不足しています")
-        headers["Access-Control-Allow-Origin"] = apiAllowOrigin
+        if (env != null) {
+            val apiAllowOrigin: String = System.getenv()["API_ALLOW_ORIGIN"] ?: throw Exception("Lambdaの環境変数設定が不足しています")
+            headers["Access-Control-Allow-Origin"] = apiAllowOrigin
+        }
 
         val s3Client = MyS3Client.create()
         val objectMapper = ObjectMapper()
