@@ -2,9 +2,6 @@ package getphotos
 
 class Photo(
     val src: String,
+    val width: Long,
+    val height: Long,
 )
-//
-// class Size(
-//    val width: Long,
-//    val height: Long,
-// )
