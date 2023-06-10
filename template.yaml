@@ -96,9 +96,9 @@ Resources:
               - '*'
       PublicAccessBlockConfiguration:
         BlockPublicAcls: True
-        BlockPublicPolicy: False
+        BlockPublicPolicy: True
         IgnorePublicAcls: True
-        RestrictPublicBuckets: True
+        RestrictPublicBuckets: False
 
   ImageS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
