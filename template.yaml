@@ -40,6 +40,7 @@ Resources:
       Architectures:
       - x86_64
       MemorySize: 512
+      Timeout: 30 #可能な限り短くしたい
       Events:
         RestApis:
           Type: Api
@@ -140,6 +141,18 @@ Resources:
       ResourceGroupName:
         Ref: ApplicationResourceGroup
       AutoConfigurationEnabled: 'true'
+
+  ImageDataDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${ResourcePrefix}-${EnvironmentName}-image
+      KeySchema:
+        - AttributeName: file_id
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: file_id
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
