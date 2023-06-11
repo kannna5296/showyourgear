@@ -40,7 +40,7 @@ class Application : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyR
         val photos = list.contents().shuffled().take(100).map {
             Photo(
                 src = "https://" + bucketName + ".s3.ap-northeast-1.amazonaws.com/" + it.key(),
-                width = 100, //TODO 実際の画像サイズを返す
+                width = 100, // TODO 実際の画像サイズを返す
                 height = 100,
             )
         }
