@@ -1,14 +1,33 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  showyourgear
+Description: showyourgear
 
-  Sample SAM Template for showyourgear
+Parameters:
+  ResourcePrefix:
+    Type: String
+    Default: showyourgear
+  EnvironmentName:
+    Type: String
+    AllowedValues:
+      - dev
+      - prd
+  ApiAllowOrigin:
+    Type: String
+
+Conditions:
+  IsProduction: !Equals [!Ref EnvironmentName, "prd"]
 
 Globals:
   Function:
     Timeout: 20
     MemorySize: 512
+    Environment:
+      Variables:
+        ENV_NAME: !Sub ${EnvironmentName}
+        API_ALLOW_ORIGIN: !If [IsProduction, "HOGEHOGEHOGEHOGEHOGEGEEEE", "http://localhost:5173"]
+        S3_ACCESS_KEY: '{{resolve:secretsmanager:showyourgear:SecretString:s3AccessKey}}'
+        S3_SECRET_KEY: '{{resolve:secretsmanager:showyourgear:SecretString:s3SecretKey}}'
+        S3_BUCKET_NAME: !Ref ImageS3Bucket
 
 Resources:
   # 写真取得API
@@ -17,59 +36,97 @@ Resources:
     Properties:
       CodeUri: apis
       Handler: getphotos.Application::handleRequest
-      Runtime: java17
+      Runtime: java11
       Architectures:
       - x86_64
       MemorySize: 512
-      Environment:
-        Variables:
-          PARAM1: VALUE
+      Timeout: 30 #可能な限り短くしたい
       Events:
-        Photo:
+        RestApis:
           Type: Api
           Properties:
+            RestApiId: !Ref RestApis
             Path: /photo
-            Method: get
+            Method: GET
   # 写真登録API
   PostPhotoFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: apis
       Handler: postphoto.Application::handleRequest
-      Runtime: java17
+      Runtime: java11
       Architectures:
         - x86_64
       MemorySize: 512
-      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
-        Variables:
-          PARAM1: VALUE
       Events:
-        Photo:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        RestApis:
+          Type: Api
           Properties:
-            Path: /photos
+            RestApiId: !Ref RestApis
+            Path: /photo
             Method: post
 
 
   # 楽器判定API
-  verifyGearFunction:
+  VerifyGearFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: apis
       Handler: verifygear.Application::handleRequest
-      Runtime: java17
+      Runtime: java11
       Architectures:
         - x86_64
       MemorySize: 512
-      Environment:
-        Variables:
-          PARAM1: VALUE
       Events:
-        Photo:
+        RestApis:
           Type: Api
           Properties:
-            Path: /gear
-            Method: post
+            RestApiId: !Ref RestApis
+            Path: /isgear
+            Method: POST
+
+  ImageS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${ResourcePrefix}-${EnvironmentName}-image
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods:
+              - GET
+            AllowedOrigins:
+              - '*'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: False
+
+  ImageS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ImageS3Bucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref ImageS3Bucket
+                - /*
+            Principal: '*'
+
+  RestApis:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub ${ResourcePrefix}-${EnvironmentName}
+      StageName: !Sub ${ResourcePrefix}-${EnvironmentName}-apis
+      Cors:
+        AllowOrigin: !Sub "'${ApiAllowOrigin}'"
+        AllowHeaders: "'Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token'"
+        AllowMethods: "'POST','GET'"
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
@@ -84,16 +141,28 @@ Resources:
       ResourceGroupName:
         Ref: ApplicationResourceGroup
       AutoConfigurationEnabled: 'true'
+
+  ImageDataDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ${ResourcePrefix}-${EnvironmentName}-image
+      KeySchema:
+        - AttributeName: file_id
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: file_id
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  ShowYourGearApi:
-    Description: API Gateway endpoint URL for Prod stage for Hello World function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  ShowYourGear:
-    Description: Hello World Lambda Function ARN
-    Value: !GetAtt ShowYourGear.Arn
-  ShowYourGearIamRole:
-    Description: Implicit IAM Role created for Hello World function
-    Value: !GetAtt ShowYourGearRole.Arn
+  GetPhotosFunction:
+    Description: 写真取得API ARN
+    Value: !GetAtt GetPhotosFunction.Arn
+  PostPhotosFunction:
+    Description: 写真取得API ARN
+    Value: !GetAtt PostPhotoFunction.Arn
+  VerifyGearFunction:
+    Description: 楽器判定API ARN
+    Value: !GetAtt VerifyGearFunction.Arn

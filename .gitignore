@@ -3,3 +3,5 @@
 
 apis/.gradle
 apis/build
+.DS_Store
+docker/localstack/localstack-mnt/

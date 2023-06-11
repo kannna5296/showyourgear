@@ -17,6 +17,11 @@ lint = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
+s3_prefix = "showyourgear"
+region = "ap-northeast-1"
+disable_rollback = true
+image_repositories = []
+parameter_overrides = "ResourcePrefix=\"showyourgear\" EnvironmentName=\"dev\" ApiAllowOrigin=\"*\""
 
 [default.package.parameters]
 resolve_s3 = true
@@ -29,3 +34,25 @@ warm_containers = "EAGER"
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"
+
+[y.deploy.parameters]
+stack_name = "showyourgear"
+resolve_s3 = true
+s3_prefix = "showyourgear"
+region = "ap-northeast-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+parameter_overrides = "ResourcePrefix=\"showyourgear\" EnvironmentName=\"dev\" ApiAllowOrigin=\"*\""
+image_repositories = []
+
+[t.deploy.parameters]
+stack_name = "showyourgear"
+resolve_s3 = true
+s3_prefix = "showyourgear"
+region = "ap-northeast-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+parameter_overrides = "ResourcePrefix=\"showyourgear\" EnvironmentName=\"dev\" ApiAllowOrigin=\"*\" AwsAccessKey=\"SHOWYOURGEAR_ACCESS_KEY_DEV\""
+image_repositories = []
